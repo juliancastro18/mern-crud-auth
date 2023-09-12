@@ -7,9 +7,3 @@ Fullstack web app using:
 - React (Vite)
 - Tailwind CSS
 - [...]
-
-\
-Concepts applied:
-- Auth (JWT)
-- Cookies
-- [...]

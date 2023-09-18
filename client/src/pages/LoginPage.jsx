@@ -1,0 +1,56 @@
+import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import FormInput from "../components/FormInput";
+
+function LoginPage() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const { signin, errors: signinErrors } = useAuth();
+
+  const onSubmit = (data) => {
+    signin(data);
+  };
+
+  return (
+    <div className="flex h-[calc(100vh-100px)] items-center justify-center">
+      <div className="bg-zinc-800 max-w-md w-full p-10 rounded-md">
+        <h1 className="text-2xl font-bold">Login</h1>
+
+        {signinErrors.map((error, i) => (
+          <div key={i} className="bg-red-500 p-2 text-white text-center my-2">
+            {error}
+          </div>
+        ))}
+
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <FormInput
+            type={"email"}
+            register={register("email", { required: true })}
+            placeholder={"Email"}
+            errors={errors.email}
+          />
+          <FormInput
+            type={"password"}
+            register={register("password", { required: true })}
+            placeholder={"Password"}
+            errors={errors.password}
+          />
+          <button type="submit">Login</button>
+        </form>
+
+        <p className="flex gap-x-2 justify-between">
+          Don't have an account?
+          <Link className="text-sky-500" to="/register">
+            Sign up
+          </Link>
+        </p>
+      </div>
+    </div>
+  );
+}
+
+export default LoginPage;

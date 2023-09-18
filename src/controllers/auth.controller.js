@@ -6,6 +6,11 @@ export const register = async (req, res) => {
   const { email, password, username } = req.body;
 
   try {
+    const foundUser = await User.findOne({email});
+    if (foundUser) {
+      return res.status(400).json( ['The email is already in use'] )
+    }
+
     const passwordHash = await bcrypt.hash(password, 10);
 
     const newUser = new User({
@@ -26,7 +31,7 @@ export const register = async (req, res) => {
       updatedAt: savedUser.updatedAt,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json( [error.message] );
   }
 };
 
@@ -37,14 +42,12 @@ export const login = async (req, res) => {
     const foundUser = await User.findOne({ email });
 
     if (!foundUser)
-      return res.status(401).json({
-        message: "User not found",
-      });
+      return res.status(401).json( ["User not found"] );
 
     const isMatch = await bcrypt.compare(password, foundUser.password);
 
     if (!isMatch) {
-      return res.status(401).json({ message: "Incorrect password" });
+      return res.status(401).json( ["Incorrect password"] );
     }
 
     const token = await createAccessToken({ id: foundUser._id });
@@ -58,7 +61,7 @@ export const login = async (req, res) => {
       updatedAt: foundUser.updatedAt,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json( [error.message] );
   }
 };
 
@@ -73,7 +76,7 @@ export const profile = async (req, res) => {
   const foundUser = await User.findById(req.user.id);
 
   if (!foundUser) {
-    return res.status(401).json({ message: "User not found!" });
+    return res.status(401).json( ["User not found!"] );
   }
   return res.json({
     id: foundUser._id,

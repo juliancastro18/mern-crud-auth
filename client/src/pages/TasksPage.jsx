@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useTasks } from "../context/TaskContext";
+import TaskCard from "../components/TaskCard";
 
 function TasksPage() {
   const { getTasks, tasks } = useTasks();
@@ -9,12 +10,9 @@ function TasksPage() {
   }, []);
 
   return (
-    <div>
+    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2">
       {tasks.map((task) => (
-        <article key={task._id}>
-          <h2>{task.title}</h2>
-          <p>{task.description}</p>
-        </article>
+        <TaskCard key={task._id} task={task} />
       ))}
     </div>
   );

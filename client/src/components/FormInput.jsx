@@ -1,16 +1,30 @@
 import React from "react";
 
-function FormInput({ type, register, placeholder, autofocus = false, errors }) {
+function capitalizeFirstLetter(string) {
+  return string[0].toUpperCase() + string.slice(1);
+}
+
+function FormInput({ type, register, autofocus = false, errors, rows = "3", InputType = "input" }) {
+  const title = capitalizeFirstLetter(register.name);
+
+  let attributes = {};
+  if (InputType === "input") {
+    attributes.type = type;
+  } else if (InputType === "textarea") {
+    attributes.rows = rows;
+  }
+
   return (
     <>
-      <input
-        type={type}
+      <label htmlFor={register.name}>{title}</label>
+      <InputType
+        {...attributes}
         {...register}
-        placeholder={placeholder}
+        placeholder={title}
         autoFocus={autofocus}
         className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
       />
-      {errors && <p className="text-red-500">{placeholder} is required.</p>}
+      {errors && <p className="text-red-500">{title} is required.</p>}
     </>
   );
 }

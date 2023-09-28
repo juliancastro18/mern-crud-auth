@@ -6,4 +6,3 @@ Fullstack web app using:
 - Express
 - React (Vite)
 - Tailwind CSS
-- [...]

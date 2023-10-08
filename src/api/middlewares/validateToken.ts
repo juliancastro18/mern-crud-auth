@@ -1,6 +1,7 @@
+import express from "express";
 import jwt from "jsonwebtoken";
 
-export const authRequired = (req, res, next) => {
+export const authRequired = (req: express.Request, res: express.Response, next: express.NextFunction) => {
   const { token } = req.cookies;
 
   if (!token) {
@@ -11,7 +12,7 @@ export const authRequired = (req, res, next) => {
     if (err) {
       return res.status(403).json({ message: "Invalid token" });
     }
-    req.user = user;
+    req.currentUser = user;
     next();
   });
 };

@@ -11,7 +11,7 @@ function RegisterPage() {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const { signup, isAuthenticated, errors: registerErrors } = useAuth();
+  const { signup, isAuthenticated, error: registerError } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,11 +29,7 @@ function RegisterPage() {
       <div className="bg-zinc-800 max-w-md p-10 rounded-md">
 
         <h1 className="text-2xl font-bold mb-6">Register</h1>
-        {registerErrors.map((error, i) => (
-          <div key={i} className="bg-red-500 p-2 text-white">
-            {error}
-          </div>
-        ))}
+        { registerError && <div className="bg-red-500 p-2 text-white">{registerError.message}</div>}
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormInput
             type={"text"}

@@ -1,5 +1,5 @@
 import { Document, Model } from 'mongoose';
-import { IUser } from '../../interfaces/IUser.ts';
+import { IUser } from '../../interfaces/IUser.js';
 
 declare global {
   namespace Express {
@@ -10,5 +10,6 @@ declare global {
 
   namespace Models {
     export type UserModel = Model<IUser & Document>;
+    export type TaskModel = Model<ITask & Document>;
   }
 }

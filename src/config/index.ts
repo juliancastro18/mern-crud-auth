@@ -20,6 +20,8 @@ export default {
    */
   databaseURL: process.env.DATABASE_URI,
 
+  jwtSecret: process.env.ACCESS_TOKEN_SECRET,
+
   /**
    * API configs
    */

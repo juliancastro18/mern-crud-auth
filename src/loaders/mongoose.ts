@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
-import config from '../config/index.js'
 import { Db } from 'mongoose/node_modules/mongodb';
+import config from '../config/index.js'
 
 export default async (): Promise<Db> => {
     try {

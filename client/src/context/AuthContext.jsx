@@ -15,7 +15,7 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [errors, setErrors] = useState([]);
+  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const signup = async (data) => {
@@ -24,9 +24,8 @@ export const AuthProvider = ({ children }) => {
       console.log(res.data);
       setUser(res.data);
       setIsAuthenticated(true);
-    } catch (error) {
-      console.log(error.response.data);
-      setErrors(error.response.data);
+    } catch (e) {
+      setError(e.response.data.errors);
     }
   };
 
@@ -36,30 +35,29 @@ export const AuthProvider = ({ children }) => {
       console.log(res.data);
       setUser(res.data);
       setIsAuthenticated(true);
-    } catch (error) {
-      console.log(error.response.data);
-      setErrors(error.response.data);
+    } catch (e) {
+      setError(e.response.data.errors);
     }
   };
 
   const logout = async () => {
     try {
-      const res = await logoutRequest();
+      await logoutRequest();
       setUser(null);
       setIsAuthenticated(false);
-    } catch (error) {
-      console.log(error);
+    } catch (e) {
+      console.log(e);
     }
   }
 
   useEffect(() => {
-    if (errors.length) {
+    if (error) {
       const timer = setTimeout(() => {
-        setErrors([]);
+        setError(null);
       }, 5000);
       return () => clearTimeout(timer);
     }
-  }, [errors]);
+  }, [error]);
 
   useEffect(() => {
     async function checkLogin() {
@@ -70,8 +68,8 @@ export const AuthProvider = ({ children }) => {
           console.log(res.data)
           setUser(res.data)
           setIsAuthenticated(true);
-        } catch (error) {
-          console.log(error);
+        } catch (e) {
+          console.log(e);
           // setIsAuthenticated(false);
           // setUser(null);
         }
@@ -83,7 +81,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ signup, signin, logout, user, isAuthenticated, errors, loading }}
+      value={{ signup, signin, logout, user, isAuthenticated, error, loading }}
     >
       {children}
     </AuthContext.Provider>

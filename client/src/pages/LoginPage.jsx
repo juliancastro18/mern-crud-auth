@@ -12,7 +12,7 @@ function LoginPage() {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const { signin, errors: signinErrors, isAuthenticated } = useAuth();
+  const { signin, error: signinError, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,12 +29,7 @@ function LoginPage() {
     <div className="flex h-[calc(100vh-100px)] items-center justify-center">
       <div className="bg-zinc-800 max-w-md w-full p-10 rounded-md">
         <h1 className="text-2xl font-bold mb-6">Login</h1>
-
-        {signinErrors.map((error, i) => (
-          <div key={i} className="bg-red-500 p-2 text-white text-center my-2">
-            {error}
-          </div>
-        ))}
+        { signinError && <div className="bg-red-500 p-2 text-white">{signinError.message}</div>}
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormInput

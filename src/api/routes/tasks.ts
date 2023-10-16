@@ -1,31 +1,37 @@
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, NextFunction } from "express";
+import { Container } from "typedi";
 import { celebrate, Joi } from "celebrate";
-import Task from "../../models/task.model.js";
 import { authRequired } from "../middlewares/validateToken.js";
+import TaskService from "../../services/tasks.js";
+import { ITaskInputDTO } from "@/interfaces/ITask.js";
 
 const route = Router();
 
 export default (app: Router) => {
   app.use("/tasks", authRequired, route);
 
-  route.get("/", async (req: Request, res: Response) => {
+  route.get("/", async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const tasks = await Task.find({ user: req.currentUser.id });
+      const taskServiceInstance = Container.get(TaskService);
+      const tasks = await taskServiceInstance.GetTasks(req.currentUser._id);
       res.json(tasks);
-    } catch (error) {
-      return res.status(500).json({ message: error.message });
+    } catch (e) {
+      return next(e);
     }
   });
 
-  route.get("/:id", async (req: Request, res: Response) => {
+  route.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const foundTask = await Task.findById(req.params.id);
-      if (!foundTask) {
-        return res.status(404).json({ message: "Task not found!" });
+      const taskServiceInstance = Container.get(TaskService);
+      const task = await taskServiceInstance.GetTask(req.params.id);
+      if (!task) {
+        const err = new Error("Task not found");
+        err["status"] = 404;
+        throw err;
       }
-      res.json(foundTask);
-    } catch (error) {
-      return res.status(500).json({ message: error.message });
+      res.json(task);
+    } catch (e) {
+      return next(e);
     }
   });
 
@@ -38,46 +44,60 @@ export default (app: Router) => {
         date: Joi.date().optional(),
       }),
     }),
-    async (req: Request, res: Response) => {
+    async (req: Request, res: Response, next: NextFunction) => {
       try {
-        const { title, description, date } = req.body;
-        const newTask = new Task({
-          title,
-          description,
-          date,
-          user: req.currentUser.id,
-        }); //.populate(user) << to show user document instead of objectId
-        const savedTask = await newTask.save();
-        res.json(savedTask);
-      } catch (error) {
-        return res.status(500).json({ message: error.message });
+        const taskServiceInstance = Container.get(TaskService);
+        const newTask = await taskServiceInstance.PostTask(
+          req.body as ITaskInputDTO,
+          req.currentUser._id
+        );
+        res.json(newTask);
+      } catch (e) {
+        return next(e);
       }
     }
   );
 
-  route.patch("/:id", async (req: Request, res: Response) => {
-    try {
-      const foundTask = await Task.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,
-      });
-      if (!foundTask) {
-        return res.status(404).json({ message: "Task not found!" });
+  route.patch(
+    "/:id",
+    celebrate({
+      body: Joi.object({
+        title: Joi.string().optional(),
+        description: Joi.string().optional(),
+        date: Joi.date().optional(),
+      }),
+    }),
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const taskServiceInstance = Container.get(TaskService);
+        const updatedTask = await taskServiceInstance.UpdateTask(
+          req.params.id,
+          req.body as ITaskInputDTO
+        );
+        if (!updatedTask) {
+          const err = new Error("Task not found");
+          err["status"] = 404;
+          throw err;
+        }
+        res.json(updatedTask);
+      } catch (e) {
+        return next(e);
       }
-      res.json(foundTask);
-    } catch (error) {
-      return res.status(500).json({ message: error.message });
     }
-  });
+  );
 
-  route.delete("/:id", async (req: Request, res: Response) => {
+  route.delete("/:id", async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const foundTask = await Task.findByIdAndDelete(req.params.id);
-      if (!foundTask) {
-        return res.status(404).json({ message: "Task not found!" });
+      const taskServiceInstance = Container.get(TaskService);
+      const deletedTask = await taskServiceInstance.DeleteTask(req.params.id);
+      if (!deletedTask) {
+        const err = new Error("Task not found");
+        err["status"] = 404;
+        throw err;
       }
       res.sendStatus(204);
-    } catch (error) {
-      return res.status(500).json({ message: error.message });
+    } catch (e) {
+      return next(e);
     }
   });
 };

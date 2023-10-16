@@ -1,9 +1,9 @@
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import { celebrate, Joi } from "celebrate";
-import User from "../../models/user.model.js";
-import bcrypt from "bcryptjs";
-import { createAccessToken } from "../../libs/jwt.js";
+import { Container } from "typedi";
+import AuthService from "../../services/auth.js";
 import { authRequired } from "../middlewares/validateToken.js";
+import { IUserInputDTO } from "../../interfaces/IUser.js";
 
 const route = Router();
 
@@ -19,36 +19,16 @@ export default (app: Router) => {
         email: Joi.string().email().required(),
       }),
     }),
-    async (req: Request, res: Response) => {
-      const { email, password, username } = req.body;
-
+    async (req: Request, res: Response, next: NextFunction) => {
       try {
-        const foundUser = await User.findOne({ email });
-        if (foundUser) {
-          return res.status(400).json(["The email is already in use"]);
-        }
-
-        const passwordHash = await bcrypt.hash(password, 10);
-
-        const newUser = new User({
-          username,
-          email,
-          password: passwordHash,
-        });
-
-        const savedUser = await newUser.save();
-        const token = await createAccessToken({ id: savedUser._id });
+        const authServiceInstance = Container.get(AuthService);
+        const { user, token } = await authServiceInstance.SignUp(
+          req.body as IUserInputDTO
+        );
         res.cookie("token", token);
-
-        res.json({
-          id: savedUser._id,
-          username: savedUser.username,
-          email: savedUser.email,
-          createdAt: savedUser.createdAt,
-          updatedAt: savedUser.updatedAt,
-        });
-      } catch (error) {
-        res.status(500).json([error.message]);
+        return res.status(201).json(user);
+      } catch (e) {
+        return next(e);
       }
     }
   );
@@ -61,32 +41,16 @@ export default (app: Router) => {
         password: Joi.string().min(6).required(),
       }),
     }),
-    async (req: Request, res: Response) => {
-      const { email, password } = req.body;
-
+    async (req: Request, res: Response, next: NextFunction) => {
       try {
-        const foundUser = await User.findOne({ email });
-
-        if (!foundUser) return res.status(401).json(["User not found"]);
-
-        const isMatch = await bcrypt.compare(password, foundUser.password);
-
-        if (!isMatch) {
-          return res.status(401).json(["Incorrect password"]);
-        }
-
-        const token = await createAccessToken({ id: foundUser._id });
+        const { email, password } = req.body;
+        const authServiceInstance = Container.get(AuthService);
+        const { user, token } = await authServiceInstance.SignIn(email, password);
         res.cookie("token", token);
-
-        res.json({
-          id: foundUser._id,
-          username: foundUser.username,
-          email: foundUser.email,
-          createdAt: foundUser.createdAt,
-          updatedAt: foundUser.updatedAt,
-        });
-      } catch (error) {
-        res.status(500).json([error.message]);
+        return res.json(user).status(200);
+      } catch (e) {
+        console.log(e);
+        return next(e);
       }
     }
   );
@@ -98,18 +62,13 @@ export default (app: Router) => {
     return res.sendStatus(200);
   });
 
-  route.get("/profile", authRequired, async (req: Request, res: Response) => {
-    const foundUser = await User.findById(req.currentUser.id);
-
-    if (!foundUser) {
-      return res.status(401).json(["User not found!"]);
+  route.get("/profile", authRequired, async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const authServiceInstance = Container.get(AuthService);
+      const user = await authServiceInstance.GetProfile(req.currentUser._id);
+      return res.json(user).status(200);
+    } catch (e) {
+      return next(e);
     }
-    return res.json({
-      id: foundUser._id,
-      username: foundUser.username,
-      email: foundUser.email,
-      createdAt: foundUser.createdAt,
-      updatedAt: foundUser.updatedAt,
-    });
   });
 };

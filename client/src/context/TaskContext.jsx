@@ -15,6 +15,7 @@ export const useTasks = () => {
 
 export function TaskProvider({ children }) {
   const [tasks, setTasks] = useState([]);
+  const [searchTasks, setSearchTasks] = useState('')
 
   const getTasks = async () => {
     try {
@@ -63,7 +64,7 @@ export function TaskProvider({ children }) {
   }
 
   return (
-    <TaskContext.Provider value={{ tasks, createTask, getTasks, deleteTask, getTask, updateTask }}>
+    <TaskContext.Provider value={{ tasks, searchTasks, setSearchTasks, createTask, getTasks, deleteTask, getTask, updateTask }}>
       {children}
     </TaskContext.Provider>
   );

@@ -3,7 +3,7 @@ import { useTasks } from "../context/TaskContext";
 import TaskCard from "../components/TaskCard";
 
 function TasksPage() {
-  const { getTasks, tasks } = useTasks();
+  const { getTasks, tasks, searchTasks } = useTasks();
 
   useEffect(() => {
     getTasks();

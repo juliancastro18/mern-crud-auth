@@ -1,6 +1,10 @@
+import MainForm from "../components/MainForm"
+
 function ProfilePage() {
   return (
-    <div>ProfilePage</div>
+    <MainForm>
+      
+    </MainForm>
   )
 }
 

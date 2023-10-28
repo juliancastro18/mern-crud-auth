@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import logo from "../assets/kip_logo.png";
 import { useAuth } from "../context/AuthContext";
 import SearchBar from "./SearchBar";
+import Logo from "./Logo";
+
 
 function Navbar() {
   const { isAuthenticated, logout, user } = useAuth();
@@ -19,11 +20,13 @@ function Navbar() {
       ? "shadow-[0_0_10px_0_rgba(0,0,0,0.5)]"
       : "border-b border-b-zinc-500";
 
+  if (!isAuthenticated) return;
+  
   return (
     <nav
-      className={`sticky top-0 bg-zinc-800 flex items-center justify-between py-2 px-2 ${separatorStyle}`}
+      className={`sticky top-0 bg-zinc-800 flex py-2 px-2 justify-between items-center ${separatorStyle}`}
     >
-      <div className="inline-flex">
+      <div className="w-60 flex-shrink-0 inline-flex">
         <button className="w-11 h-11 mx-1 flex items-center justify-center">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -41,15 +44,14 @@ function Navbar() {
           </svg>
         </button>
 
-        <Link className="inline-flex items-center" to={isAuthenticated ? "/tasks" : "/"}>
-          <img src={logo} width="44" height="40" alt="Kip Logo" className="p-1" />
-          <h1 className="text-2xl px-2 font-normal text-zinc-200">Kip</h1>
+        <Link to={"/"}>
+          <Logo />
         </Link>
       </div>
+    
+      <SearchBar className="w-full max-w-3xl" />
 
-      <SearchBar />
-
-      <ul className="flex gap-x-2">
+      <ul className="ml-auto flex gap-x-2 pl-8">
         {isAuthenticated ? (
           <>
             <li>Welcome {user.username}</li>

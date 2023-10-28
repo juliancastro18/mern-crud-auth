@@ -1,8 +1,11 @@
 import React from "react";
+import { useTasks } from "../context/TaskContext";
 
-function SearchBar() {
+function SearchBar({ className }) {
+  const { searchTasks, setSearchTasks } = useTasks();
+
   return (
-    <form>
+    <form className={className}>
       <label
         for="default-search"
         class="mb-2 text-sm font-medium sr-only text-white"
@@ -11,7 +14,7 @@ function SearchBar() {
       </label>
       <div className="relative group">
         <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-          <div className="p-3 hover:bg-zinc-200 hover:bg-opacity-20 rounded-full cursor-pointer">
+          <div className="p-3 hover:bg-zinc-200 hover:bg-opacity-20 rounded-full cursor-pointer group-focus-within:hover:bg-opacity-50">
             <svg
               className="w-4 h-4 text-zinc-300 group-focus-within:text-zinc-600"
               aria-hidden="true"
@@ -33,31 +36,35 @@ function SearchBar() {
           type="search"
           id="default-search"
           className="block w-full p-3 pl-16 text-base rounded-lg bg-zinc-600 placeholder-zinc-400 focus:bg-white focus:text-zinc-900 outline-none"
+          onChange={(e) => setSearchTasks(e.target.value)}
+          value={searchTasks}
           placeholder="Search"
           required
         />
-        <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-          <button
-            type="submit"
-            className="p-3 hover:bg-zinc-200 hover:bg-opacity-20 rounded-full"
-          >
-            <svg
-              className="w-4 h-4 text-zinc-300 group-focus-within:text-zinc-600"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 20 20"
+        {searchTasks && (
+          <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+            <button
+              className="p-3 hover:bg-zinc-200 hover:bg-opacity-20 rounded-full group-focus-within:hover:bg-opacity-50"
+              onClick={() => setSearchTasks("")}
             >
-              <path
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M3 3 17 17M3 17 17 3"
-              />
-            </svg>
-          </button>
-        </div>
+              <svg
+                className="w-4 h-4 text-zinc-300 group-focus-within:text-zinc-600"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M3 3 17 17M3 17 17 3"
+                />
+              </svg>
+            </button>
+          </div>
+        )}
       </div>
     </form>
   );

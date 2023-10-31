@@ -37,6 +37,7 @@ function LoginPage() {
           register={register("email", { required: true })}
           errors={errors.email}
           className="mb-4"
+          autofocus="true"
         />
         <FormInput
           type={"password"}
@@ -44,14 +45,14 @@ function LoginPage() {
           errors={errors.password}
           className="mb-4"
         />
-        <FormButton type="submit" color="blue" className="my-4">
-          Login
+        <FormButton type="submit" className="my-4">
+          Submit
         </FormButton>
       </form>
 
       <p className="flex gap-x-2 justify-between">
         Don't have an account?
-        <Link className="text-sky-500" to="/register">
+        <Link className="text-sky-400" to="/register">
           Sign up
         </Link>
       </p>

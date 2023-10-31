@@ -13,7 +13,7 @@ function ProtectedRoute() {
   return (
     <>
       <Navbar />
-      <main className="container mx-auto px-10">
+      <main className="container mx-auto p-10">
         {/* <SideMenu /> */}
         <Outlet />
       </main>

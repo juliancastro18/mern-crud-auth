@@ -7,8 +7,7 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import TasksPage from "./pages/TasksPage";
 import TaskFormPage from "./pages/TaskFormPage";
-import ProfilePage from "./pages/ProfilePage";
-import PageNotFound from "./pages/ProfilePage";
+import PageNotFound from "./pages/PageNotFound";
 
 function App() {
   return (
@@ -23,10 +22,9 @@ function App() {
                 <Route path="/" element={<TasksPage />} />
                 <Route path="/add-task" element={<TaskFormPage />} />
                 <Route path="/tasks/:id" element={<TaskFormPage />} />
-                <Route path="/profile" element={<ProfilePage />} />
               </Route>
 
-              <Route path="*" element={<PageNotFound />} />.
+              <Route path="*" element={<PageNotFound />} />
             </Routes>
         </BrowserRouter>
       </TaskProvider>

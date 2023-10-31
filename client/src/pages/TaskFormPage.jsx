@@ -36,7 +36,7 @@ function TaskFormPage() {
     } else {
       await createTask(task);
     }
-    navigate("/tasks");
+    navigate("/");
   };
 
   return (
@@ -52,7 +52,7 @@ function TaskFormPage() {
           InputType="textarea"
         />
         <FormInput type={"date"} register={register("date")} />
-        <button className="bg-indigo-500 px-3 py-2 rounded-md">Save</button>
+        <button className="bg-sky-400 px-3 py-2 rounded-md">Save</button>
       </form>
     </div>
   );

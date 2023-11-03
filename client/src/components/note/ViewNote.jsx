@@ -21,18 +21,21 @@ function TaskCard({ task }) {
     }
   }, [isClosing]);
 
-  const handleClick = (e) => {
-    if (e.target.dataset?.element === "background") {
-      cardRef.current.style.top =
-      cardRef.current.offsetTop - cardRef.current.clientHeight * 0.35 + "px";
-      setIsClosing(true);
-    } else if (!isEdit) {
+  const handleClickInside = (e) => {
+    e.stopPropagation();
+    if (!isEdit) {
       cardRef.current.style.top =
         cardRef.current.offsetTop - window.scrollY + "px";
       const { offsetTop, clientHeight } = cardRef.current;
       setPreviousProps({ offsetTop, clientHeight });
       setIsEdit(true);
     }
+  };
+
+  const handleClickOutside = () => {
+    cardRef.current.style.top =
+      cardRef.current.offsetTop - cardRef.current.clientHeight * 0.35 + "px";
+    setIsClosing(true);
   };
 
   const className = isEdit
@@ -47,41 +50,47 @@ function TaskCard({ task }) {
         style={
           isClosing
             ? {
-                top: previousProps.offsetTop - window.scrollY + "px"
+                top: previousProps.offsetTop - window.scrollY + "px",
               }
             : isEdit
             ? { top: "35%", transform: "translate(0, -35%)" }
             : {}
         }
-        onClick={handleClick}
+        onClick={handleClickInside}
       >
         {isEdit ? (
-          <EditCardContent task={task} />
+          <EditCardContent
+            task={task}
+            handleClickOutside={handleClickOutside}
+          />
         ) : (
           <article className="p-4 pb-10 overflow-auto">
-            <header className="pb-4">
-              <h2 className="text-md font-semibold">{task.title}</h2>
-            </header>
-            <div className="text-zinc-300 pb-4">
-              <LinesEllipsis
-                text={task.description}
-                maxLine="10"
-                ellipsis="..."
-                trimRight
-                basedOn="words"
-              />
-            </div>
+            {task.title.length > 0 && (
+              <header className="pb-4">
+                <h2 className="text-md font-medium">{task.title}</h2>
+              </header>
+            )}
+            {task.description.length > 0 && (
+              <div className="text-zinc-300 pb-4 text-md">
+                <LinesEllipsis
+                  text={task.description}
+                  maxLine="10"
+                  ellipsis="..."
+                  trimRight
+                  basedOn="words"
+                />
+              </div>
+            )}
+            {task.title.length + task.description.length === 0 && (
+              <h2 className="text-xl font-normal text-zinc-400">Empty note</h2>
+            )}
           </article>
         )}
       </div>
       {isEdit && (
         <>
           <div style={{ height: previousProps.clientHeight }}></div>
-          <div
-            data-element="background"
-            className="bg-zinc-900/60 fixed inset-0 w-full h-full z-10"
-            onClick={handleClick}
-          ></div>
+          <div className="bg-zinc-900/60 fixed inset-0 w-full h-full z-10"></div>
         </>
       )}
     </>

@@ -39,13 +39,17 @@ export default (app: Router) => {
     "/",
     celebrate({
       body: Joi.object({
-        title: Joi.string().required(),
-        description: Joi.string().required(),
-        date: Joi.date().optional(),
+        title: Joi.string().allow('').required(),
+        description: Joi.string().allow('').required()
       }),
     }),
     async (req: Request, res: Response, next: NextFunction) => {
       try {
+        if (!req.body.title && !req.body.description) {
+          const err = new Error("Can't create an empty note!");
+          err["status"] = 400;
+          throw err;
+        }
         const taskServiceInstance = Container.get(TaskService);
         const newTask = await taskServiceInstance.PostTask(
           req.body as ITaskInputDTO,
@@ -62,9 +66,8 @@ export default (app: Router) => {
     "/:id",
     celebrate({
       body: Joi.object({
-        title: Joi.string().optional(),
-        description: Joi.string().optional(),
-        date: Joi.date().optional(),
+        title: Joi.string().allow('').optional(),
+        description: Joi.string().allow('').optional()
       }),
     }),
     async (req: Request, res: Response, next: NextFunction) => {

@@ -6,7 +6,6 @@ import ProtectedRoute from "./ProtectedRoute";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import TasksPage from "./pages/TasksPage";
-import TaskFormPage from "./pages/TaskFormPage";
 import PageNotFound from "./pages/PageNotFound";
 
 function App() {
@@ -20,8 +19,6 @@ function App() {
 
               <Route element={<ProtectedRoute />}>
                 <Route path="/" element={<TasksPage />} />
-                <Route path="/add-task" element={<TaskFormPage />} />
-                <Route path="/tasks/:id" element={<TaskFormPage />} />
               </Route>
 
               <Route path="*" element={<PageNotFound />} />

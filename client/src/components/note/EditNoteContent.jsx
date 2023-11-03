@@ -1,29 +1,40 @@
 import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useTasks } from "../../context/TaskContext";
-import { dirtyValues } from "../../helpers/main";
+import { dirtyValues, isFormDataEmpty } from "../../helpers/main";
 import ReactTimeAgo from "react-time-ago";
+import useOutsideClick from "../../hooks/useOutsideClick";
 
-function EditNoteContent({ task = null }) {
+function EditNoteContent({ task = null, input = null, handleClickOutside }) {
   const { createTask, updateTask } = useTasks();
   const {
     register,
     handleSubmit,
     formState: { dirtyFields },
   } = useForm({
-    defaultValues: { title: task?.title, description: task?.description },
+    defaultValues: {
+      title: task?.title,
+      description: task?.description || input,
+    },
   });
 
+  const ref = useRef();
   const isMounted = useRef(false);
   const dirtyFieldsRef = useRef();
   dirtyFieldsRef.current = dirtyFields;
 
-  const onSubmit = (id = null, data) => {
-    if (!data || Object.keys(data).length === 0) {
+  useOutsideClick(ref, handleClickOutside);
+
+  const onSubmit = (data, id = null) => {
+    if (!id && isFormDataEmpty(data)) {
       return;
     }
     if (id) {
-      updateTask(id, data);
+      const payload = dirtyValues(dirtyFieldsRef.current, data);
+      if (!payload || Object.keys(payload).length === 0) {
+        return;
+      }
+      updateTask(id, payload);
     } else {
       createTask(data);
     }
@@ -34,7 +45,7 @@ function EditNoteContent({ task = null }) {
       handleSubmit(onSubmit)();
     } else {
       handleSubmit((data) => {
-        onSubmit(task._id, dirtyValues(dirtyFieldsRef.current, data));
+        onSubmit(data, task._id);
       })();
     }
   };
@@ -48,12 +59,12 @@ function EditNoteContent({ task = null }) {
   }, []);
 
   return (
-    <article className="p-4 pb-10 overflow-auto max-h-[85vh]" >
+    <article className="p-4 pb-10 overflow-auto max-h-[85vh]" ref={ref}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <input
           {...register("title")}
           id={"title"}
-          className="text-md font-semibold pb-4 block w-full bg-inherit focus:outline-none"
+          className="text-xl font-medium pb-4 block w-full bg-inherit focus:outline-none"
           placeholder="Title"
           autoComplete="off"
         />

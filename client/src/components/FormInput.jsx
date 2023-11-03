@@ -34,7 +34,7 @@ function FormInput({
           placeholder=" "
         />
         <label
-          for={register.name}
+          htmlFor={register.name}
           className="absolute text-md text-zinc-400 bg-zinc-800 duration-300 transform -translate-y-4 scale-75 top-1.5 z-10 origin-[0] px-2 cursor-text peer-focus:px-2 peer-focus:text-sky-400  peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-1.5 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
         >
           {title}

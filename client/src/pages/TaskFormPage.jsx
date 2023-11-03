@@ -4,10 +4,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useTasks } from "../context/TaskContext";
 import FormInput from "../components/FormInput";
 
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-dayjs.extend(utc);
-
 function TaskFormPage() {
   const { register, handleSubmit, setValue } = useForm();
   const { createTask, getTask, updateTask } = useTasks();

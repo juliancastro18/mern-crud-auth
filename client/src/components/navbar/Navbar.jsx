@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import SearchBar from "./SearchBar";
-import Logo from "./Logo";
+import Logo from "../Logo"
 import ProfileDropdown from "./ProfileDropdown";
 
 function Navbar() {

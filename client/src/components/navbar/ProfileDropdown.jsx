@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from 'react-router-dom'
-import profilePic from "../assets/profile.jpg";
 
 function ProfileDropdown({ className, user, logout }) {
   const [isOpen, setIsOpen] = useState(false);

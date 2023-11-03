@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
 import { Navigate } from "react-router-dom";
-import Navbar from "./components/Navbar";
+import Navbar from "./components/navbar/Navbar";
 
 function ProtectedRoute() {
   const { isAuthenticated, loading } = useAuth();

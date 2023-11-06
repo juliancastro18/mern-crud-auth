@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import LinesEllipsis from "react-lines-ellipsis";
-import EditCardContent from "./EditNoteContent";
+import EditNoteContent from "./EditNoteContent";
+import { Transition } from "@headlessui/react";
+import Toolbar from "./Toolbar";
 
 function TaskCard({ task }) {
   const [isEdit, setIsEdit] = useState(false);
@@ -17,7 +19,7 @@ function TaskCard({ task }) {
       setTimeout(() => {
         setIsClosing(false);
         setIsEdit(false);
-      }, 150);
+      }, 200);
     }
   }, [isClosing]);
 
@@ -45,7 +47,7 @@ function TaskCard({ task }) {
   return (
     <>
       <div
-        className={`bg-zinc-800 outline outline-1 outline-zinc-500 rounded-lg w-full max-w-[600px] transition-all duration-100 ease-in-out ${className}`}
+        className={`bg-zinc-800 outline outline-1 outline-zinc-500 rounded-lg w-full max-w-[600px] group transition-all duration-150 ease-in-out ${className}`}
         ref={cardRef}
         style={
           isClosing
@@ -59,19 +61,19 @@ function TaskCard({ task }) {
         onClick={handleClickInside}
       >
         {isEdit ? (
-          <EditCardContent
+          <EditNoteContent
             task={task}
             handleClickOutside={handleClickOutside}
           />
         ) : (
-          <article className="p-4 pb-10 overflow-auto">
+          <article className="p-4 overflow-auto">
             {task.title.length > 0 && (
               <header className="pb-4">
                 <h2 className="text-md font-medium">{task.title}</h2>
               </header>
             )}
             {task.description.length > 0 && (
-              <div className="text-zinc-300 pb-4 text-md">
+              <div className="text-zinc-300 text-md whitespace-pre-wrap">
                 <LinesEllipsis
                   text={task.description}
                   maxLine="10"
@@ -86,13 +88,25 @@ function TaskCard({ task }) {
             )}
           </article>
         )}
+        <Toolbar
+          isOpen={isEdit}
+          taskId={task._id}
+          handleClose={handleClickOutside}
+        />
       </div>
-      {isEdit && (
-        <>
-          <div style={{ height: previousProps.clientHeight }}></div>
-          <div className="bg-zinc-900/60 fixed inset-0 w-full h-full z-10"></div>
-        </>
-      )}
+      {isEdit && <div style={{ height: previousProps.clientHeight }}></div>}
+      <Transition
+        className="fixed"
+        show={isEdit && !isClosing}
+        enter="transition-opacity duration-150"
+        enterFrom="opacity-0"
+        enterTo="opacity-100"
+        leave="transition-opacity duration-150"
+        leaveFrom="opacity-100"
+        leaveTo="opacity-0"
+      >
+        <div className="bg-zinc-900/60 fixed inset-0 w-full h-full z-10"></div>
+      </Transition>
     </>
   );
 }

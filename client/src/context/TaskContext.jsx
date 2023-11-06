@@ -26,22 +26,6 @@ export function TaskProvider({ children }) {
     }
   }
 
-  const createTask = async (task) => {
-    const res = await createTaskRequest(task);
-    console.log(res);
-  };
-
-  const deleteTask = async (id) => {
-    try {
-      const res = await deleteTaskRequest(id);
-      if (res.status === 204) {
-        setTasks(tasks.filter(task => task._id !== id));
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
   const getTask = async (id) => {
     let task = null;
     try {
@@ -55,9 +39,32 @@ export function TaskProvider({ children }) {
     return task;
   }
 
+  const createTask = async (task) => {
+    try {
+      const res = await createTaskRequest(task);
+      const newTasks = [...tasks, res.data]
+      setTasks(newTasks)
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const deleteTask = async (id) => {
+    try {
+      const res = await deleteTaskRequest(id);
+      if (res.status === 204) {
+        setTasks(tasks.filter(task => task._id !== id));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   const updateTask = async (id, task) => {
     try {
-      await updateTaskRequest(id, task);
+      const res = await updateTaskRequest(id, task);
+      const newTasks = tasks.map(task => task._id === id ? res.data : task);
+      setTasks(newTasks);
     } catch (error) {
       console.log(error);
     }

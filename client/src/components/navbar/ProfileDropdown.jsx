@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from 'react-router-dom'
+import { Link } from "react-router-dom";
 
 function ProfileDropdown({ className, user, logout }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -9,7 +9,9 @@ function ProfileDropdown({ className, user, logout }) {
 
   useEffect(() => {
     let handler = (e) => {
-      if (!menuRef.current.contains(e.target)) setIsOpen(false);
+      if (!menuRef.current?.contains(e.target)) {
+        setIsOpen(false);
+      }
     };
 
     document.addEventListener("mousedown", handler);

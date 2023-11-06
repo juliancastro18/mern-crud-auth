@@ -1,10 +1,10 @@
-import { useState} from "react";
-
+import { useState } from "react";
 import EditNoteContent from "./EditNoteContent";
+import Toolbar from "./Toolbar";
 
 function NewNote() {
   const [isOpen, setIsOpen] = useState(false);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
 
   const handleClickInside = (e) => {
     e.stopPropagation();
@@ -16,20 +16,26 @@ function NewNote() {
 
   const handleClickOutside = () => {
     if (isOpen) {
-      setInput('');
+      setInput("");
       setIsOpen(false);
     }
   };
 
   return (
     <div
-      className={`bg-zinc-800 outline outline-1 outline-zinc-500 rounded-lg w-full max-w-[600px] mb-[18px] shadow-lg shadow-zinc-900/80`}
+      className="bg-zinc-800 outline outline-1 outline-zinc-500 rounded-lg w-full max-w-[600px] mb-[18px] shadow-lg shadow-zinc-900/80 group"
       onClick={handleClickInside}
     >
       {isOpen ? (
-        <EditNoteContent input={input} handleClickOutside={handleClickOutside} />
+        <>
+          <EditNoteContent
+            input={input}
+            handleClickOutside={handleClickOutside}
+          />
+          <Toolbar isOpen={isOpen} handleClose={handleClickOutside} />
+        </>
       ) : (
-        <article className={`p-4 p${isOpen ? "pb-10" : ""} overflow-auto`}>
+        <article className="px-4 py-3 overflow-auto">
           <header>
             <input
               id="newtaskinput"

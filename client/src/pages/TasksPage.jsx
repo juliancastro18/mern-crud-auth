@@ -13,7 +13,7 @@ function TasksPage() {
   return (
     <div className="flex flex-col gap-[18px] w-full justify-center items-center">
       <NewNote />
-      {tasks.map((task) => (
+      {tasks.sort( (a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).map((task) => (
         <ViewNote key={task._id} task={task} />
       ))}
     </div>

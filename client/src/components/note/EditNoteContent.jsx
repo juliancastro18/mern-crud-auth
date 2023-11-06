@@ -18,12 +18,15 @@ function EditNoteContent({ task = null, input = null, handleClickOutside }) {
     },
   });
 
-  const ref = useRef();
+  const articleRef = useRef();
+  const { ref: descriptionFormRef, ...descriptionRegister } =
+    register("description");
+  const descriptionCustomRef = useRef(null);
   const isMounted = useRef(false);
   const dirtyFieldsRef = useRef();
   dirtyFieldsRef.current = dirtyFields;
 
-  useOutsideClick(ref, handleClickOutside);
+  useOutsideClick(articleRef, handleClickOutside);
 
   const onSubmit = (data, id = null) => {
     if (!id && isFormDataEmpty(data)) {
@@ -58,33 +61,49 @@ function EditNoteContent({ task = null, input = null, handleClickOutside }) {
     }
   }, []);
 
+  useEffect(() => {
+    const autoResize = () => {
+      if (descriptionCustomRef.current) {
+        descriptionCustomRef.current.style.height = "auto";
+        descriptionCustomRef.current.style.height =
+          descriptionCustomRef.current.scrollHeight + "px";
+      }
+    };
+    autoResize();
+    descriptionCustomRef.current.addEventListener("input", autoResize, false);
+  }, []);
+
   return (
-    <article className="p-4 pb-10 overflow-auto max-h-[85vh]" ref={ref}>
+    <article className="px-4 pt-4 overflow-auto max-h-[85vh]" ref={articleRef}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <input
           {...register("title")}
           id={"title"}
-          className="text-xl font-medium pb-4 block w-full bg-inherit focus:outline-none"
+          className="text-lg font-medium pb-4 block w-full bg-inherit focus:outline-none"
           placeholder="Title"
           autoComplete="off"
         />
         <label htmlFor="title" className="sr-only">
           Title
         </label>
-        <input
-          {...register("description")}
+        <textarea
+          {...descriptionRegister}
+          ref={(e) => {
+            descriptionFormRef(e);
+            descriptionCustomRef.current = e;
+          }}
           id={"description"}
-          className="text-zinc-300 pb-4 block w-full bg-inherit focus:outline-none"
+          className="text-zinc-300 block w-full h-auto bg-inherit resize-none focus:outline-none"
           placeholder={task ? "Description" : "Create a note..."}
           autoComplete="off"
           autoFocus
-        />
+        ></textarea>
         <label htmlFor="description" className="sr-only">
           Description
         </label>
       </form>
-      {task !== null && (
-        <div className="text-right text-sm text-zinc-400">
+      {task && (
+        <div className="text-right text-sm text-zinc-400 pt-4 pb-2">
           Last modified:{" "}
           <ReactTimeAgo date={Date.parse(task.updatedAt)} locale="en-US" />
         </div>

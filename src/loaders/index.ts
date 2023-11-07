@@ -9,12 +9,12 @@ export default async ({ expressApp }) => {
     name: "userModel",
     model: (await import('../models/user.js')).default,
   };
-  const taskModel = {
-    name: "taskModel",
-    model: (await import('../models/task.js')).default,
+  const noteModel = {
+    name: "noteModel",
+    model: (await import('../models/note.js')).default,
   };
 
-  dependencyInjectorLoader([userModel, taskModel]);
+  dependencyInjectorLoader([userModel, noteModel]);
 
   expressLoader({ app: expressApp });
 };

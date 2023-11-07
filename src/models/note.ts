@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import { ITask } from "../interfaces/ITask.js";
+import { INote } from "../interfaces/INote.js";
 
-const Task = new mongoose.Schema(
+const Note = new mongoose.Schema(
   {
     title: {
       type: String,
@@ -22,4 +22,4 @@ const Task = new mongoose.Schema(
   }
 );
 
-export default mongoose.model<ITask & mongoose.Document>("Task", Task);
+export default mongoose.model<INote & mongoose.Document>("Note", Note);

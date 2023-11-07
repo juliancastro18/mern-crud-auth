@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-export interface ITask {
+export interface INote {
   _id: string;
   title: string;
   description: string;
@@ -9,7 +9,7 @@ export interface ITask {
   updatedAt: Date;
 }
 
-export interface ITaskInputDTO {
+export interface INoteInputDTO {
   title?: string;
   description?: string;
   user?: mongoose.Types.ObjectId;

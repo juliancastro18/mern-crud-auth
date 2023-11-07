@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 
-function FormButton({ children, color = "amber", ...attributes }) {
+function FormButton({ children, color = "yellow", ...attributes }) {
   const colorVariants = {
-    amber: 'bg-yellow-500 hover:bg-amber-600',
+    yellow: 'bg-yellow-500 hover:bg-yellow-600',
     gray: 'bg-gray-500 hover:bg-gray-600',
     red: 'bg-red-500 hover:bg-red-600',
   }

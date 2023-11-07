@@ -1,18 +1,25 @@
 import { useState, useRef, useEffect } from "react";
 import LinesEllipsis from "react-lines-ellipsis";
+import Highlighter from "react-highlight-words";
 import EditNoteContent from "./EditNoteContent";
 import { Transition } from "@headlessui/react";
 import Toolbar from "./Toolbar";
 
-function TaskCard({ task }) {
+function NoteCard({ note, searchTerms = [] }) {
   const [isEdit, setIsEdit] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  const [description, setDescription] = useState("");
   const [previousProps, setPreviousProps] = useState({
     offsetTop: 0,
     height: 0,
   });
 
   const cardRef = useRef();
+
+  const handleReflow = (rleState) => {
+    const { clamped, text } = rleState;
+    setDescription(text + (clamped ? "..." : ""));
+  };
 
   useEffect(() => {
     if (isClosing) {
@@ -41,7 +48,7 @@ function TaskCard({ task }) {
   };
 
   const className = isEdit
-    ? "fixed z-30 shadow-md shadow-black/40"
+    ? "fixed z-30 shadow-[0_2px_6px_3px_rgba(0,0,0,0.4)]"
     : "hover:shadow-md hover:shadow-zinc-900/80 hover:duration-100";
 
   return (
@@ -62,35 +69,50 @@ function TaskCard({ task }) {
       >
         {isEdit ? (
           <EditNoteContent
-            task={task}
+            note={note}
             handleClickOutside={handleClickOutside}
           />
         ) : (
           <article className="p-4 overflow-auto">
-            {task.title.length > 0 && (
+            {note.title.length > 0 && (
               <header className="pb-4">
-                <h2 className="text-md font-medium">{task.title}</h2>
+                <Highlighter
+                  className="text-md font-medium"
+                  highlightClassName="bg-yellow-300"
+                  searchWords={searchTerms}
+                  autoEscape={true}
+                  textToHighlight={note.title}
+                />
               </header>
             )}
-            {task.description.length > 0 && (
-              <div className="text-zinc-300 text-md whitespace-pre-wrap">
+            {note.description.length > 0 && (
+              <div className="text-zinc-300 text-md whitespace-pre-wrap relative">
                 <LinesEllipsis
-                  text={task.description}
+                  className="invisible absolute"
+                  onReflow={handleReflow}
+                  text={note.description}
                   maxLine="10"
                   ellipsis="..."
                   trimRight
                   basedOn="words"
                 />
+                <Highlighter
+                  className=""
+                  highlightClassName="bg-yellow-300"
+                  searchWords={searchTerms}
+                  autoEscape={true}
+                  textToHighlight={description}
+                />
               </div>
             )}
-            {task.title.length + task.description.length === 0 && (
+            {note.title.length + note.description.length === 0 && (
               <h2 className="text-xl font-normal text-zinc-400">Empty note</h2>
             )}
           </article>
         )}
         <Toolbar
           isOpen={isEdit}
-          taskId={task._id}
+          noteId={note._id}
           handleClose={handleClickOutside}
         />
       </div>
@@ -111,4 +133,4 @@ function TaskCard({ task }) {
   );
 }
 
-export default TaskCard;
+export default NoteCard;

@@ -23,7 +23,7 @@ function NewNote() {
 
   return (
     <div
-      className="bg-zinc-800 outline outline-1 outline-zinc-500 rounded-lg w-full max-w-[600px] mb-[18px] shadow-lg shadow-zinc-900/80 group"
+      className="bg-zinc-800 outline outline-1 outline-zinc-500 rounded-lg w-full max-w-[600px] mb-[18px] shadow-[0_2px_6px_3px_rgba(0,0,0,0.4)] group"
       onClick={handleClickInside}
     >
       {isOpen ? (
@@ -38,15 +38,15 @@ function NewNote() {
         <article className="px-4 py-3 overflow-auto">
           <header>
             <input
-              id="newtaskinput"
-              className="text-md font-medium block w-full bg-inherit focus:outline-none"
-              placeholder="Create a task..."
+              id="newnoteinput"
+              className="text-md font-medium block w-full bg-inherit focus:outline-none placeholder-zinc-400"
+              placeholder="Create a note..."
               value={input}
               onChange={handleClickInside}
               autoFocus
             />
-            <label htmlFor="newtaskinput" className="sr-only">
-              Create a task
+            <label htmlFor="newnoteinput" className="sr-only">
+              Create a note
             </label>
           </header>
         </article>

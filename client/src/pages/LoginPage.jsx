@@ -2,9 +2,9 @@ import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
-import FormInput from "../components/FormInput";
-import FormButton from "../components/FormButton";
-import MainForm from "../components/MainForm";
+import FormInput from "../components/form/FormInput";
+import FormButton from "../components/form/FormButton";
+import MainForm from "../components/form/MainForm";
 
 function LoginPage() {
   const {

@@ -1,6 +1,6 @@
 import React from "react";
-import MainForm from "../components/MainForm";
-import FormButton from "../components/FormButton";
+import MainForm from "../components/form/MainForm";
+import FormButton from "../components/form/FormButton";
 
 function PageNotFound() {
   return (

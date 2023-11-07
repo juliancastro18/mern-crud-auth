@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import SearchBar from "./SearchBar";
-import Logo from "../Logo"
+import Logo from "../Logo";
 import ProfileDropdown from "./ProfileDropdown";
 
 function Navbar() {
@@ -27,7 +27,10 @@ function Navbar() {
       className={`sticky top-0 bg-zinc-800 flex py-2 px-3 items-center ${separatorStyle}`}
     >
       <div className="w-60 flex-shrink-0 inline-flex items-center">
-        <button className="w-11 h-11 mr-1 flex items-center justify-center rounded-full hover:bg-zinc-100 hover:bg-opacity-10">
+        <button
+          className="w-11 h-11 mr-1 flex items-center justify-center rounded-full hover:bg-zinc-100 hover:bg-opacity-10"
+          onClick={() => alert("Sorry, this is an MVP. This feature is not yet available.")}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="w-6 h-6"
@@ -55,7 +58,6 @@ function Navbar() {
         <span className="text-zinc-300">{user.username}</span>
         <ProfileDropdown user={user} logout={logout} />
       </div>
-      
     </nav>
   );
 }

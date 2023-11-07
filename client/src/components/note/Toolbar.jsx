@@ -1,8 +1,8 @@
-import { useTasks } from "../../context/TaskContext";
+import { useNotes } from "../../context/NoteContext";
 import ToolbarButton from "./ToolbarButton";
 
-function Toolbar({ isOpen, taskId, handleClose }) {
-  const { deleteTask } = useTasks();
+function Toolbar({ isOpen, noteId, handleClose }) {
+  const { deleteNote } = useNotes();
 
   const visibility = isOpen
     ? "opacity-100"
@@ -10,12 +10,12 @@ function Toolbar({ isOpen, taskId, handleClose }) {
 
   return (
     <div
-      className={`h-[34px] my-1.5 flex justify-between transition-opacity duration-200 text-zinc-300 ${visibility}`}
+      className={`h-[34px] mb-1.5 flex justify-between transition-opacity duration-200 text-zinc-300 ${visibility}`}
     >
       <div className="flex">
         {/* Hero Icons */}
-        {taskId && (
-          <ToolbarButton onClick={() => deleteTask(taskId)}>
+        {noteId && (
+          <ToolbarButton name="Delete" onClick={() => deleteNote(noteId)}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

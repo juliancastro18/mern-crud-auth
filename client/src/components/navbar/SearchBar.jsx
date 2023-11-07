@@ -1,8 +1,8 @@
 import React from "react";
-import { useTasks } from "../../context/TaskContext";
+import { useNotes } from "../../context/NoteContext";
 
 function SearchBar({ className }) {
-  const { searchTasks, setSearchTasks } = useTasks();
+  const { searchNotes, setSearchNotes } = useNotes();
 
   return (
     <form className={className}>
@@ -36,16 +36,16 @@ function SearchBar({ className }) {
           type="search"
           id="default-search"
           className="block w-full p-3 pl-16 text-base rounded-lg bg-zinc-600 placeholder-zinc-400 focus:bg-white focus:text-zinc-900 outline-none"
-          onChange={(e) => setSearchTasks(e.target.value)}
-          value={searchTasks}
+          onChange={(e) => setSearchNotes(e.target.value)}
+          value={searchNotes}
           placeholder="Search"
           required
         />
-        {searchTasks && (
+        {searchNotes && (
           <div className="absolute inset-y-0 right-0 flex items-center pr-3">
             <button
               className="p-3 hover:bg-zinc-200 hover:bg-opacity-20 rounded-full group-focus-within:hover:bg-opacity-50"
-              onClick={() => setSearchTasks("")}
+              onClick={() => setSearchNotes("")}
             >
               <svg
                 className="w-4 h-4 text-zinc-300 group-focus-within:text-zinc-600"

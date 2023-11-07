@@ -2,19 +2,19 @@ import { Router, Request, Response, NextFunction } from "express";
 import { Container } from "typedi";
 import { celebrate, Joi } from "celebrate";
 import { authRequired } from "../middlewares/validateToken.js";
-import TaskService from "../../services/tasks.js";
-import { ITaskInputDTO } from "@/interfaces/ITask.js";
+import NoteService from "../../services/notes.js";
+import { INoteInputDTO } from "@/interfaces/INote.js";
 
 const route = Router();
 
 export default (app: Router) => {
-  app.use("/tasks", authRequired, route);
+  app.use("/notes", authRequired, route);
 
   route.get("/", async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const taskServiceInstance = Container.get(TaskService);
-      const tasks = await taskServiceInstance.GetTasks(req.currentUser._id);
-      res.json(tasks);
+      const noteServiceInstance = Container.get(NoteService);
+      const notes = await noteServiceInstance.GetNotes(req.currentUser._id);
+      res.json(notes);
     } catch (e) {
       return next(e);
     }
@@ -22,14 +22,14 @@ export default (app: Router) => {
 
   route.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const taskServiceInstance = Container.get(TaskService);
-      const task = await taskServiceInstance.GetTask(req.params.id);
-      if (!task) {
-        const err = new Error("Task not found");
+      const noteServiceInstance = Container.get(NoteService);
+      const note = await noteServiceInstance.GetNote(req.params.id);
+      if (!note) {
+        const err = new Error("Note not found");
         err["status"] = 404;
         throw err;
       }
-      res.json(task);
+      res.json(note);
     } catch (e) {
       return next(e);
     }
@@ -50,12 +50,12 @@ export default (app: Router) => {
           err["status"] = 400;
           throw err;
         }
-        const taskServiceInstance = Container.get(TaskService);
-        const newTask = await taskServiceInstance.PostTask(
-          req.body as ITaskInputDTO,
+        const noteServiceInstance = Container.get(NoteService);
+        const newNote = await noteServiceInstance.PostNote(
+          req.body as INoteInputDTO,
           req.currentUser._id
         );
-        res.json(newTask);
+        res.json(newNote);
       } catch (e) {
         return next(e);
       }
@@ -72,17 +72,17 @@ export default (app: Router) => {
     }),
     async (req: Request, res: Response, next: NextFunction) => {
       try {
-        const taskServiceInstance = Container.get(TaskService);
-        const updatedTask = await taskServiceInstance.UpdateTask(
+        const noteServiceInstance = Container.get(NoteService);
+        const updatedNote = await noteServiceInstance.UpdateNote(
           req.params.id,
-          req.body as ITaskInputDTO
+          req.body as INoteInputDTO
         );
-        if (!updatedTask) {
-          const err = new Error("Task not found");
+        if (!updatedNote) {
+          const err = new Error("Note not found");
           err["status"] = 404;
           throw err;
         }
-        res.json(updatedTask);
+        res.json(updatedNote);
       } catch (e) {
         return next(e);
       }
@@ -91,10 +91,10 @@ export default (app: Router) => {
 
   route.delete("/:id", async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const taskServiceInstance = Container.get(TaskService);
-      const deletedTask = await taskServiceInstance.DeleteTask(req.params.id);
-      if (!deletedTask) {
-        const err = new Error("Task not found");
+      const noteServiceInstance = Container.get(NoteService);
+      const deletedNote = await noteServiceInstance.DeleteNote(req.params.id);
+      if (!deletedNote) {
+        const err = new Error("Note not found");
         err["status"] = 404;
         throw err;
       }

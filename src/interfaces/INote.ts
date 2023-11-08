@@ -1,18 +1,16 @@
 import mongoose from "mongoose";
 
-export interface ITask {
+export interface INote {
   _id: string;
   title: string;
   description: string;
-  date: Date;
   user: mongoose.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
 
-export interface ITaskInputDTO {
-  title: string;
-  description: string;
-  date?: Date;
+export interface INoteInputDTO {
+  title?: string;
+  description?: string;
   user?: mongoose.Types.ObjectId;
 }

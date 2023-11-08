@@ -23,7 +23,7 @@ function NewNote() {
 
   return (
     <div
-      className="bg-zinc-800 outline outline-1 outline-zinc-500 rounded-lg w-full max-w-[600px] mb-[18px] shadow-[0_2px_6px_3px_rgba(0,0,0,0.4)] group"
+      className="bg-zinc-800 outline outline-1 outline-zinc-500 rounded-lg w-full max-w-[600px] mb-4 shadow-[0_2px_6px_3px_rgba(0,0,0,0.4)] group"
       onClick={handleClickInside}
     >
       {isOpen ? (

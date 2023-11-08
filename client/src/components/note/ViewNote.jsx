@@ -1,53 +1,29 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import LinesEllipsis from "react-lines-ellipsis";
 import Highlighter from "react-highlight-words";
 import EditNoteContent from "./EditNoteContent";
 import { Transition } from "@headlessui/react";
 import Toolbar from "./Toolbar";
+import useFixComponent from "../../hooks/useFixComponent";
 
 function NoteCard({ note, searchTerms = [] }) {
-  const [isEdit, setIsEdit] = useState(false);
-  const [isClosing, setIsClosing] = useState(false);
+  const {
+    ref: cardRef,
+    isState,
+    stateValues,
+    style: cardStyle,
+    handleClickInside,
+    handleClickOutside,
+    closedProps,
+  } = useFixComponent();
   const [description, setDescription] = useState("");
-  const [previousProps, setPreviousProps] = useState({
-    offsetTop: 0,
-    height: 0,
-  });
-
-  const cardRef = useRef();
 
   const handleReflow = (rleState) => {
     const { clamped, text } = rleState;
     setDescription(text + (clamped ? "..." : ""));
   };
 
-  useEffect(() => {
-    if (isClosing) {
-      setTimeout(() => {
-        setIsClosing(false);
-        setIsEdit(false);
-      }, 200);
-    }
-  }, [isClosing]);
-
-  const handleClickInside = (e) => {
-    e.stopPropagation();
-    if (!isEdit) {
-      cardRef.current.style.top =
-        cardRef.current.offsetTop - window.scrollY + "px";
-      const { offsetTop, clientHeight } = cardRef.current;
-      setPreviousProps({ offsetTop, clientHeight });
-      setIsEdit(true);
-    }
-  };
-
-  const handleClickOutside = () => {
-    cardRef.current.style.top =
-      cardRef.current.offsetTop - cardRef.current.clientHeight * 0.35 + "px";
-    setIsClosing(true);
-  };
-
-  const className = isEdit
+  const className = !isState(stateValues.closed)
     ? "fixed z-30 shadow-[0_2px_6px_3px_rgba(0,0,0,0.4)]"
     : "hover:shadow-md hover:shadow-zinc-900/80 hover:duration-100";
 
@@ -56,18 +32,10 @@ function NoteCard({ note, searchTerms = [] }) {
       <div
         className={`bg-zinc-800 outline outline-1 outline-zinc-500 rounded-lg w-full max-w-[600px] group transition-all duration-150 ease-in-out ${className}`}
         ref={cardRef}
-        style={
-          isClosing
-            ? {
-                top: previousProps.offsetTop - window.scrollY + "px",
-              }
-            : isEdit
-            ? { top: "35%", transform: "translate(0, -35%)" }
-            : {}
-        }
+        style={cardStyle}
         onClick={handleClickInside}
       >
-        {isEdit ? (
+        {isState(stateValues.editing) ? (
           <EditNoteContent
             note={note}
             handleClickOutside={handleClickOutside}
@@ -111,15 +79,17 @@ function NoteCard({ note, searchTerms = [] }) {
           </article>
         )}
         <Toolbar
-          isOpen={isEdit}
+          isOpen={isState(stateValues.editing)}
           noteId={note._id}
           handleClose={handleClickOutside}
         />
       </div>
-      {isEdit && <div style={{ height: previousProps.clientHeight }}></div>}
+      {!isState(stateValues.closed) && (
+        <div style={{ height: closedProps.clientHeight }}></div>
+      )}
       <Transition
-        className="fixed"
-        show={isEdit && !isClosing}
+        className="fixed z-20"
+        show={isState(stateValues.editing)}
         enter="transition-opacity duration-150"
         enterFrom="opacity-0"
         enterTo="opacity-100"
@@ -127,7 +97,7 @@ function NoteCard({ note, searchTerms = [] }) {
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
       >
-        <div className="bg-zinc-900/60 fixed inset-0 w-full h-full z-10"></div>
+        <div className="bg-zinc-900/60 fixed inset-0 w-full h-full"></div>
       </Transition>
     </>
   );

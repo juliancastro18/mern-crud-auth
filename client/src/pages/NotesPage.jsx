@@ -17,7 +17,7 @@ function NotesPage() {
     searchTerms.every((word) => note.description.toLowerCase().includes(word));
 
   return (
-    <div className="flex flex-col gap-[18px] w-full justify-center items-center">
+    <div className="flex flex-col gap-4 w-full justify-center items-center">
       <NewNote />
       {notes
         .filter((note) => isSearchResult(note))

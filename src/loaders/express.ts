@@ -43,10 +43,13 @@ export default ({ app }: { app: express.Application }) => {
   });
   
   app.use((err, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    let joiErrors = [];
+    err.details?.forEach(d => joiErrors.push(d.message))
+
     res.status(err.status || 500);
     res.json({
       errors: {
-        message: err.message,
+        message: joiErrors.join(', ') || err.message,
       },
     });
   });

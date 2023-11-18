@@ -8,3 +8,4 @@
 - [ ] Extra features: categories, note colors, recycle bin, fixed notes, draggable notes
 - [ ] Add admin role and feedback notes (only visible to authors and admins)
 - [ ] Add refresh tokens?
+- [ ] Deployment
